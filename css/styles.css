@@ -153,6 +153,19 @@ nav {
     justify-content: center;
 }
 
+@media (min-width: 769px) {
+    nav {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        display: flex !important;
+        /* Ensure it's never hidden by other logic */
+        z-index: 10;
+        width: auto;
+    }
+}
+
 .nav-links {
     display: flex;
     gap: 40px;
@@ -244,7 +257,11 @@ nav {
     background: none;
     border: none;
     cursor: pointer;
-    padding: 10px;
+    padding: 15px;
+    /* Larger hit area */
+    position: relative;
+    z-index: 2001;
+    /* Ensure it stays above everything on mobile */
 }
 
 .bar {
@@ -254,6 +271,8 @@ nav {
     margin: 5px auto;
     background-color: var(--text-main);
     transition: var(--transition-medium);
+    pointer-events: none;
+    /* Let parent handle click */
 }
 
 /* Hero Section */
@@ -1037,7 +1056,28 @@ footer {
     }
 
     .nav-container {
-        padding: 0 20px;
+        padding: 0 15px;
+    }
+
+    .site-name {
+        font-size: 1rem;
+        /* Smaller for mobile */
+    }
+
+    /* Hide the Hosted By text on mobile */
+    .logo-area div span:last-child {
+        display: none !important;
+    }
+
+    .logo-area {
+        gap: 8px;
+        flex-shrink: 1;
+        min-width: 0;
+    }
+
+    .logo-img {
+        width: 30px;
+        height: 30px;
     }
 
     .menu-toggle {

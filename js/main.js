@@ -97,6 +97,16 @@ function safeCreateIcons() {
     }
 }
 
+function downloadICS(event) {
+    const formatDate = (date) => date.toISOString().replace(/-|:|\.\d+/g, '');
+    const calendarData = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'BEGIN:VEVENT', `SUMMARY:${event.title}`, `DTSTART:${formatDate(event.date)}`, `DTEND:${formatDate(event.endDate)}`, `LOCATION:${event.address}`, `DESCRIPTION:${event.desc}`, 'END:VEVENT', 'END:VCALENDAR'].join('\n');
+    const blob = new Blob([calendarData], { type: 'text/calendar' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url; a.download = 'event.ics'; a.click();
+    window.URL.revokeObjectURL(url);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
 
     // 1. Static UI elements
@@ -121,7 +131,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const header = document.querySelector('header');
 
     if (menuToggle && navLinks) {
-        menuToggle.addEventListener('click', () => {
+        menuToggle.onclick = (e) => {
+            e.preventDefault();
+            e.stopPropagation();
             navLinks.classList.toggle('active');
             const bars = document.querySelectorAll('.bar');
             if (navLinks.classList.contains('active')) {
@@ -131,7 +143,21 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 bars.forEach(b => { b.style.transform = 'none'; b.style.opacity = '1'; });
             }
+        };
+
+        // Ensure bars don't swallow clicks
+        document.querySelectorAll('.bar').forEach(bar => {
+            bar.style.pointerEvents = 'none';
         });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (navLinks.classList.contains('active') && !navLinks.contains(e.target) && !menuToggle.contains(e.target)) {
+                navLinks.classList.remove('active');
+                document.querySelectorAll('.bar').forEach(b => { b.style.transform = 'none'; b.style.opacity = '1'; });
+            }
+        });
+
         navLinks.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', () => {
                 navLinks.classList.remove('active');
@@ -156,13 +182,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }, { threshold: 0.1 });
 
-    function observeElements(selector) {
-        document.querySelectorAll(selector).forEach(el => {
-            el.style.opacity = "0";
-            el.style.transform = "translateY(20px)";
-            el.style.transition = "opacity 0.6s ease-out, transform 0.6s ease-out";
-            fadeInObserver.observe(el);
-        });
+    function observeElements(selector, delay = 0) {
+        setTimeout(() => {
+            document.querySelectorAll(selector).forEach(el => {
+                if (el.style.opacity === "1") return;
+                el.style.opacity = "0";
+                el.style.transform = "translateY(20px)";
+                el.style.transition = "opacity 0.6s ease-out, transform 0.6s ease-out";
+                fadeInObserver.observe(el);
+            });
+        }, delay);
     }
 
     // 6. Events Logic
@@ -176,119 +205,115 @@ document.addEventListener('DOMContentLoaded', () => {
 
         function renderFeaturedEvent() {
             if (!featuredContainer) return;
-            const dateStr = upcomingEvent.date.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
-            const timeStr = `${formatTime(upcomingEvent.date)} – ${formatTime(upcomingEvent.endDate)} EDT`;
-            const flowHtml = upcomingEvent.flow.map(step => `
-                <div class="flow-step">
-                    <span class="flow-time">${step.time}</span>
-                    <span class="flow-title">${step.title}</span>
-                </div>
-            `).join('');
+            try {
+                const dateStr = upcomingEvent.date.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+                const timeStr = `${formatTime(upcomingEvent.date)} – ${formatTime(upcomingEvent.endDate)} EDT`;
+                const flowHtml = upcomingEvent.flow.map(step => `
+                    <div class="flow-step">
+                        <span class="flow-time">${step.time}</span>
+                        <span class="flow-title">${step.title}</span>
+                    </div>
+                `).join('');
 
-            featuredContainer.innerHTML = `
-                <div class="card featured-event-card">
-                    <div class="featured-left-col">
-                        <div class="featured-cover">
-                            <img src="assets/banner.jpg" alt="Cover">
-                            <div class="featured-overlay-info">
-                                 <div class="host-info">
-                                    <span class="host-label">Hosted By</span>
-                                    <div class="host-names">${upcomingEvent.hosts.join(' & ')}</div>
-                                 </div>
-                                 <a href="https://maps.google.com/?q=${encodeURIComponent(upcomingEvent.address)}" target="_blank" class="map-link">
-                                    <i data-lucide="map"></i> View Map
-                                 </a>
+                featuredContainer.innerHTML = `
+                    <div class="card featured-event-card" style="opacity: 1 !important; transform: none !important;">
+                        <div class="featured-left-col">
+                            <div class="featured-cover">
+                                <img src="assets/banner.jpg" alt="Cover">
+                                <div class="featured-overlay-info">
+                                     <div class="host-info">
+                                        <span class="host-label">Hosted By</span>
+                                        <div class="host-names">${upcomingEvent.hosts.join(' & ')}</div>
+                                     </div>
+                                     <a href="https://maps.google.com/?q=${encodeURIComponent(upcomingEvent.address)}" target="_blank" class="map-link">
+                                        <i data-lucide="map"></i> View Map
+                                     </a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="featured-details-panel">
+                            <div class="featured-header">
+                                <span class="featured-badge pulse-animation">NEXT EVENT</span>
+                                <h2 class="featured-title">${upcomingEvent.title}</h2>
+                                <div class="featured-meta">
+                                    <div class="featured-meta-item"><i data-lucide="calendar"></i> <span>${dateStr}</span></div>
+                                    <div class="featured-meta-item"><i data-lucide="clock"></i> <span>${timeStr}</span></div>
+                                    <div class="featured-meta-item"><i data-lucide="map-pin"></i> <span>${upcomingEvent.locationName}</span></div>
+                                </div>
+                            </div>
+                            <div class="featured-desc">
+                                <p>${upcomingEvent.desc}</p>
+                                <p class="featured-note"><strong>Note:</strong> We will be by the blue couches by the bar!</p>
+                            </div>
+                            <div class="featured-flow">
+                                <h4>Event Agenda</h4>
+                                <div class="flow-steps">${flowHtml}</div>
+                            </div>
+                            <div class="featured-actions">
+                                <a href="${upcomingEvent.meetupUrl}" target="_blank" class="btn btn-red" style="justify-content: center;">RSVP on Meetup</a>
+                                <button id="add-to-calendar-btn" class="btn btn-secondary" style="justify-content: center;">
+                                    <i data-lucide="calendar-plus"></i> Add to Calendar
+                                </button>
                             </div>
                         </div>
                     </div>
-                    <div class="featured-details-panel">
-                        <div class="featured-header">
-                            <span class="featured-badge pulse-animation">NEXT EVENT</span>
-                            <h2 class="featured-title">${upcomingEvent.title}</h2>
-                            <div class="featured-meta">
-                                <div class="featured-meta-item"><i data-lucide="calendar"></i> <span>${dateStr}</span></div>
-                                <div class="featured-meta-item"><i data-lucide="clock"></i> <span>${timeStr}</span></div>
-                                <div class="featured-meta-item"><i data-lucide="map-pin"></i> <span>${upcomingEvent.locationName}</span></div>
-                            </div>
-                        </div>
-                        <div class="featured-desc">
-                            <p>${upcomingEvent.desc}</p>
-                            <p class="featured-note"><strong>Note:</strong> We will be by the blue couches by the bar!</p>
-                        </div>
-                        <div class="featured-flow">
-                            <h4>Event Agenda</h4>
-                            <div class="flow-steps">${flowHtml}</div>
-                        </div>
-                        <div class="featured-actions">
-                            <a href="${upcomingEvent.meetupUrl}" target="_blank" class="btn btn-red" style="justify-content: center;">RSVP on Meetup</a>
-                            <button id="add-to-calendar-btn" class="btn btn-secondary" style="justify-content: center;">
-                                <i data-lucide="calendar-plus"></i> Add to Calendar
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `;
-            safeCreateIcons();
-            const calBtn = document.getElementById('add-to-calendar-btn');
-            if (calBtn) calBtn.onclick = () => downloadICS(upcomingEvent);
-            observeElements('.featured-event-card');
+                `;
+                safeCreateIcons();
+                const calBtn = document.getElementById('add-to-calendar-btn');
+                if (calBtn) calBtn.onclick = () => downloadICS(upcomingEvent);
+            } catch (e) {
+                console.error("Featured Render Error:", e);
+            }
         }
 
         function renderPastEvents() {
             if (!eventsGrid) return;
-            let filtered = pastEvents.filter(event => {
-                const matchesSearch = (event.title + event.city + event.tags.join(' ')).toLowerCase().includes(currentSearch.toLowerCase());
-                const matchesFilter = currentFilter === 'all' ? true : (event.city === currentFilter || event.tags.includes(currentFilter));
-                return matchesSearch && matchesFilter;
-            });
-            filtered.sort((a, b) => currentSort === 'newest' ? b.date - a.date : a.date - b.date);
+            try {
+                let filtered = pastEvents.filter(event => {
+                    const matchesSearch = (event.title + event.city + event.tags.join(' ')).toLowerCase().includes(currentSearch.toLowerCase());
+                    const matchesFilter = currentFilter === 'all' ? true : (event.city === currentFilter || event.tags.includes(currentFilter));
+                    return matchesSearch && matchesFilter;
+                });
+                filtered.sort((a, b) => currentSort === 'newest' ? b.date - a.date : a.date - b.date);
 
-            if (filtered.length === 0) {
-                eventsGrid.innerHTML = '<p style="color: var(--text-muted); grid-column: 1/-1; text-align: center;">No events found.</p>';
-                return;
-            }
+                if (filtered.length === 0) {
+                    eventsGrid.innerHTML = '<p style="color: var(--text-muted); grid-column: 1/-1; text-align: center;">No events found.</p>';
+                    return;
+                }
 
-            eventsGrid.innerHTML = filtered.map(event => {
-                const dateStr = event.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
-                return `
-                    <div class="event-grid-card">
-                        <div class="event-card-cover">
-                            <img src="assets/banner.jpg" alt="Cover">
-                             <div class="photo-badge">${event.photos} Photos</div>
-                        </div>
-                        <div class="card-content">
-                            <div class="card-date">${dateStr}</div>
-                            <h3 class="card-title">${event.title}</h3>
-                            <div class="card-location"><i data-lucide="map-pin"></i> ${event.location}</div>
-                            <div class="card-stats">
-                                <span><i data-lucide="users"></i> ${event.attendees}</span>
-                                <span>${event.city}</span>
+                eventsGrid.innerHTML = filtered.map(event => {
+                    const dateStr = event.date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+                    return `
+                        <div class="event-grid-card" style="opacity: 1 !important; transform: none !important;">
+                            <div class="event-card-cover">
+                                <img src="assets/banner.jpg" alt="Cover">
+                                 <div class="photo-badge">${event.photos} Photos</div>
                             </div>
-                            <div class="card-tags">${event.tags.map(t => `<span class="tag-badge">${t}</span>`).join('')}</div>
-                            <div style="margin-top: 16px;"><a href="#" class="btn btn-red btn-sm-cards">View Details</a></div>
+                            <div class="card-content">
+                                <div class="card-date">${dateStr}</div>
+                                <h3 class="card-title">${event.title}</h3>
+                                <div class="card-location"><i data-lucide="map-pin"></i> ${event.location}</div>
+                                <div class="card-stats">
+                                    <span><i data-lucide="users"></i> ${event.attendees}</span>
+                                    <span>${event.city}</span>
+                                </div>
+                                <div class="card-tags">${event.tags.map(t => `<span class="tag-badge">${t}</span>`).join('')}</div>
+                                <div style="margin-top: 16px;"><a href="#" class="btn btn-red btn-sm-cards">View Details</a></div>
+                            </div>
                         </div>
-                    </div>
-                `;
-            }).join('');
-            safeCreateIcons();
-            observeElements('.event-grid-card');
+                    `;
+                }).join('');
+                safeCreateIcons();
+            } catch (e) {
+                console.error("Past Events Render Error:", e);
+            }
         }
 
-        function downloadICS(event) {
-            const formatDate = (date) => date.toISOString().replace(/-|:|\.\d+/g, '');
-            const calendarData = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'BEGIN:VEVENT', `SUMMARY:${event.title}`, `DTSTART:${formatDate(event.date)}`, `DTEND:${formatDate(event.endDate)}`, `LOCATION:${event.address}`, `DESCRIPTION:${event.desc}`, 'END:VEVENT', 'END:VCALENDAR'].join('\n');
-            const blob = new Blob([calendarData], { type: 'text/calendar' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url; a.download = 'event.ics'; a.click();
-            window.URL.revokeObjectURL(url);
-        }
-
-        // Listeners for Events Page
         const searchInput = document.getElementById('event-search');
         if (searchInput) searchInput.oninput = (e) => { currentSearch = e.target.value; renderPastEvents(); };
         const sortSelect = document.getElementById('event-sort');
         if (sortSelect) sortSelect.onchange = (e) => { currentSort = e.target.value; renderPastEvents(); };
+
         document.querySelectorAll('.chip').forEach(chip => {
             chip.onclick = () => {
                 document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
