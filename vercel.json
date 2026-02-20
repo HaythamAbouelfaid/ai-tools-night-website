@@ -1,13 +1,18 @@
 {
     "cleanUrls": true,
+    "trailingSlash": false,
     "rewrites": [
         {
             "source": "/hackathon-participants",
             "destination": "/hackathon.html"
         },
         {
-            "source": "/(.*)",
-            "destination": "/index.html"
+            "source": "/events",
+            "destination": "/events.html"
+        },
+        {
+            "source": "/about",
+            "destination": "/about.html"
         }
     ]
 }
