@@ -9,4 +9,15 @@ export default defineConfig({
             },
         },
     },
+    build: {
+        rollupOptions: {
+            input: {
+                main: 'index.html',
+                about: 'about.html',
+                events: 'events.html',
+                hackathon: 'hackathon.html',
+                success: 'success.html'
+            }
+        }
+    }
 });
