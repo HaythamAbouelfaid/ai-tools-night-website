@@ -1,0 +1,13 @@
+{
+  "name": "ai-tools-explorers-night",
+  "version": "1.0.0",
+  "description": "Static website for AI Tools Explorers Night",
+  "scripts": {
+    "dev": "node run.mjs",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^5.1.4"
+  }
+}

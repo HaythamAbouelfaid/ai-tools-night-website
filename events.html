@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events | AI Tools Explorers Night</title>
+    <meta name="description"
+        content="Upcoming meetups, past event recaps, and community highlights for the AI Tools Explorers Night community.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <header>
+        <div class="container nav-container">
+            <a href="/" class="logo-area">
+                <img src="assets/logo.jpg" alt="We've Got Now Logo" class="logo-img">
+                <div style="display: flex; flex-direction: column; line-height: 1.1;">
+                    <span class="site-name">AI Tools Explorers Night</span>
+                    <span
+                        style="font-size: 0.7rem; color: var(--text-muted); font-weight: 500; letter-spacing: 0.5px;">Hosted
+                        by We've Got Now</span>
+                </div>
+            </a>
+
+            <button class="menu-toggle" aria-label="Toggle navigation">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/events.html" class="active">Events</a></li>
+                    <li><a href="/hackathon.html" class="nav-hackathon">Hackathon Participants</a></li>
+                    <li><a href="/about.html">About</a></li>
+                </ul>
+            </nav>
+            <a href="/index.html#join-form" class="nav-cta">Join Group</a>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero hero-events">
+        <div class="hero-overlay"></div>
+        <!-- Banner Image -->
+        <img src="assets/banner.jpg" alt="AI Tools Night Banner" class="hero-bg">
+        <div class="container hero-content">
+            <div class="badges-row">
+                <span class="badge">Powered by We've Got Now</span>
+            </div>
+            <h1>Community <span class="text-gradient">Events</span></h1>
+            <p class="subtitle">Past meetups, upcoming sessions, and community highlights.</p>
+            <div class="btn-group">
+                <a href="https://www.meetup.com/weve_got_now/" target="_blank" rel="noopener" class="btn btn-red">
+                    <i data-lucide="calendar"></i> RSVP on Meetup
+                </a>
+                <a href="/index.html#join-form" class="btn btn-secondary">
+                    Join the Community
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Upcoming Event -->
+    <!-- Featured Upcoming Event -->
+    <section class="container" style="position: relative; z-index: 10;">
+        <div id="featured-event-container">
+            <!-- Rendered by JS -->
+            <div class="card featured-event-card loading-state">
+                <h3>Loading upcoming event...</h3>
+            </div>
+        </div>
+    </section>
+
+    <!-- Past Events Section -->
+    <section class="container" style="padding-top: 100px;">
+        <div class="events-header">
+            <h2 class="section-title" style="text-align: left; margin-bottom: 0;">Previous Events</h2>
+
+            <div class="events-controls">
+                <div class="search-wrapper">
+                    <i data-lucide="search" class="search-icon"></i>
+                    <input type="text" id="event-search" placeholder="Search events..." class="search-input">
+                </div>
+
+                <div class="sort-wrapper">
+                    <select id="event-sort" class="sort-select">
+                        <option value="newest">Newest First</option>
+                        <option value="oldest">Oldest First</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <div class="filter-chips" id="event-filters">
+            <button class="chip active" data-filter="all">All</button>
+            <button class="chip" data-filter="Herndon">Herndon</button>
+            <button class="chip" data-filter="Richmond">Richmond</button>
+            <button class="chip" data-filter="Special Edition">Special Editions</button>
+            <button class="chip" data-filter="Workshop">Workshops</button>
+        </div>
+
+        <div id="events-grid" class="events-grid">
+            <!-- Rendered by JS -->
+        </div>
+    </section>
+
+    <!-- Want to Attend? CTA -->
+    <section class="container" style="margin-bottom: 100px; padding-top: 60px;">
+        <div class="cta-strip">
+            <div class="cta-content">
+                <h3>Want to attend the next one?</h3>
+                <p>Submit the site form to receive the secret Meetup code.</p>
+            </div>
+            <div class="cta-buttons">
+                <a href="https://www.meetup.com/weve_got_now/" target="_blank" class="btn btn-red">RSVP on Meetup</a>
+                <a href="https://www.linkedin.com/groups/13007016/" target="_blank" class="btn btn-blue">Join LinkedIn
+                    Group</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <!-- Brand Column -->
+                <div class="footer-col footer-brand">
+                    <a href="/" class="logo-area" style="text-decoration: none;">
+                        <span class="site-name" style="font-size: 1.5rem;">AI Tools Explorers Night</span>
+                    </a>
+                    <p>Hosted by <strong>We've Got Now</strong> (Developing Professionals in Information Technology). A
+                        community for aspiring IT professionals built on inclusion, curiosity, and entrepreneurship.</p>
+                </div>
+
+                <!-- Quick Links -->
+                <div class="footer-col">
+                    <h4>Explore</h4>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/events.html">Events</a></li>
+                        <li><a href="/about.html">About Us</a></li>
+                        <li><a href="/hackathon.html">Hackathon</a></li>
+                        <li><a href="/index.html#join-form">Join Community</a></li>
+                    </ul>
+                </div>
+
+                <!-- Connect -->
+                <div class="footer-col">
+                    <h4>Connect</h4>
+                    <ul>
+                        <li><a href="https://www.linkedin.com/groups/13007016/" target="_blank">LinkedIn Group</a></li>
+                        <li><a href="https://www.meetup.com/weve_got_now/" target="_blank">Meetup Page</a></li>
+                        <li><a href="mailto:hello@aitoolsexplorers.com">Contact Us</a></li>
+                    </ul>
+                    <div class="footer-socials" style="margin-top: 20px;">
+                        <a href="#" aria-label="Twitter"><i data-lucide="twitter" size="20"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i data-lucide="linkedin" size="20"></i></a>
+                        <a href="#" aria-label="Instagram"><i data-lucide="instagram" size="20"></i></a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2026 Developing Professionals in Information Technology. All rights reserved.</p>
+                <div style="display: flex; gap: 24px;">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Code of Conduct</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="js/main.js"></script>
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>
