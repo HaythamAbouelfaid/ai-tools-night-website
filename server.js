@@ -101,6 +101,7 @@ const server = http.createServer(async (req, res) => {
                         readableDate,
                         data.fullName || '',
                         data.project || '',
+                        data.linkedin || '',
                         data.phone || '',
                         data.presenting || '',
                         data.tools || '',
