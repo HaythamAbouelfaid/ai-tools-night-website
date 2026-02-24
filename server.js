@@ -95,6 +95,7 @@ const server = http.createServer(async (req, res) => {
                 const readableDate = `${rawDate.getMonth() + 1}/${rawDate.getDate()}/${rawDate.getFullYear()}`;
 
                 let values = [];
+                let actualSheetName = '';
 
                 if (data.formType === 'hackathon') {
                     values = [
