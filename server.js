@@ -107,6 +107,7 @@ const server = http.createServer(async (req, res) => {
                         data.tools || '',
                         data.favoriteLLM || ''
                     ];
+                    actualSheetName = 'Hackathon Form';
                 } else if (data.formType === 'member') {
                     values = [
                         readableDate,
@@ -119,18 +120,25 @@ const server = http.createServer(async (req, res) => {
                         data.source || '',
                         data.notes || ''
                     ];
+                    actualSheetName = 'Main Form';
+                } else if (data.formType === 'careers') {
+                    values = [
+                        readableDate,
+                        data.role || '',
+                        data.full_name || '',
+                        data.email || '',
+                        data.tools_used || '',
+                        data.project_description || '',
+                        data.working_style || '',
+                        data.links || '',
+                        data.location_timezone || ''
+                    ];
+                    actualSheetName = 'AI Tools Night - Applications';
                 } else {
                     throw new Error("Invalid formType");
                 }
 
                 const token = await getAccessToken();
-
-                let actualSheetName = '';
-                if (data.formType === 'member') {
-                    actualSheetName = 'Main Form';
-                } else {
-                    actualSheetName = 'Hackathon Form';
-                }
 
                 // Call Google Sheets API directly with native fetch
                 const sheetUrl = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(actualSheetName)}!A1:append?valueInputOption=USER_ENTERED`;

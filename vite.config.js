@@ -14,6 +14,7 @@ export default defineConfig({
             input: {
                 main: 'index.html',
                 about: 'about.html',
+                careers: 'careers.html',
                 events: 'events.html',
                 hackathon: 'hackathon.html',
                 promptLibrary: 'prompt-library.html',

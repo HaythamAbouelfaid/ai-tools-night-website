@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Careers | AI Tools Explorers Night</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="stylesheet" href="css/styles.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .careers-hero {
+            padding: 180px 0 80px;
+            min-height: auto;
+            display: flex;
+            align-items: center;
+        }
+
+        .careers-hero-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        @media (min-width: 900px) {
+            .careers-hero-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 80px;
+            }
+        }
+
+        .careers-label {
+            display: inline-block;
+            font-size: 0.85rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: var(--accent-cyan);
+            margin-bottom: 20px;
+        }
+
+        .careers-headline {
+            font-size: 3.5rem;
+            line-height: 1.1;
+            font-weight: 800;
+            margin-bottom: 30px;
+        }
+
+        .careers-desc {
+            font-size: 1.15rem;
+            color: var(--text-muted);
+            line-height: 1.8;
+            max-width: 600px;
+        }
+
+        .video-container {
+            max-width: 900px;
+            margin: 0 auto 120px;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-glow);
+            border: var(--border-glass);
+            background: var(--bg-card);
+        }
+
+        /* Roles Accordion */
+        .roles-section {
+            padding-bottom: 120px;
+        }
+
+        .roles-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .role-card {
+            background: var(--bg-card-light);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .role-header {
+            padding: 24px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+            transition: background 0.3s ease;
+        }
+
+        .role-header:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .role-title-box {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .role-number {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--accent-magenta);
+            background: rgba(217, 70, 239, 0.1);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .role-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 0;
+            color: var(--text-main);
+        }
+
+        .role-toggle-icon {
+            color: var(--text-muted);
+            transition: transform 0.3s ease;
+        }
+
+        .role-card.active .role-toggle-icon {
+            transform: rotate(180deg);
+            color: var(--accent-cyan);
+        }
+
+        .role-card.active {
+            border-color: var(--accent-magenta);
+            box-shadow: 0 0 20px rgba(217, 70, 239, 0.2);
+        }
+
+        .role-content {
+            display: none;
+            padding: 0 30px 30px 80px;
+            color: var(--text-muted);
+            line-height: 1.7;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .role-card.active .role-content {
+            display: block;
+        }
+
+        .role-content h4 {
+            color: var(--text-main);
+            margin: 20px 0 10px;
+            font-size: 1.05rem;
+        }
+
+        .role-content ul {
+            padding-left: 20px;
+            margin-bottom: 20px;
+        }
+
+        .apply-btn {
+            margin-top: 20px;
+            display: inline-block;
+        }
+
+        /* Modal Form Specifics */
+        /* Modal Styles matching prompt-library */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            padding: 20px;
+        }
+
+        .modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .modal-content {
+            background: var(--bg-body);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            padding: 40px;
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: var(--text-main);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: var(--accent-red);
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <header>
+        <div class="container nav-container">
+            <a href="/" class="logo-area">
+                <img src="assets/logo.jpg" alt="Logo" class="logo-img">
+                <div style="display: flex; flex-direction: column; line-height: 1.1;">
+                    <span class="site-name">AI Tools Explorers Night</span>
+                    <span
+                        style="font-size: 0.7rem; color: var(--text-muted); font-weight: 500; letter-spacing: 0.5px;">Hosted
+                        by We've Got Now</span>
+                </div>
+            </a>
+            <button class="menu-toggle" aria-label="Toggle navigation">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/events.html">Events</a></li>
+                    <li><a href="/prompt-library">Prompt Library</a></li>
+                    <li><a href="/careers.html" class="active">Careers</a></li>
+                    <li><a href="/hackathon.html" class="nav-hackathon">Hackathon Participants</a></li>
+                    <li><a href="/about.html">About</a></li>
+                </ul>
+            </nav>
+            <a href="/index.html#join-form" class="nav-cta">Join Group</a>
+        </div>
+    </header>
+
+    <!-- Careers Hero -->
+    <section class="careers-hero container">
+        <div class="careers-hero-grid">
+            <div>
+                <span class="careers-label">CAREERS</span>
+                <h1 class="careers-headline">Build Something People <span class="text-gradient">Actually Need</span>
+                </h1>
+            </div>
+            <div>
+                <p class="careers-desc">
+                    We're a small, but mighty team building things to solve problems in the markets for various personas
+                    and ICPs. If you want the opportunity corporations are not giving you, are accountable, and like to
+                    collaborate to make tangible impact — let's talk.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Video Embed -->
+    <section class="container" style="padding-top: 0;">
+        <div class="video-container">
+            <!-- Provided Vimeo Responsive Code -->
+            <div style="padding:56.25% 0 0 0;position:relative;"><iframe
+                    src="https://player.vimeo.com/video/1104918116?h=e31927c330&amp;badge=0&amp;autopause=0&amp;player_id=0&amp;app_id=58479"
+                    frameborder="0"
+                    allow="autoplay; fullscreen; picture-in-picture; clipboard-write; encrypted-media; web-share"
+                    referrerpolicy="strict-origin-when-cross-origin"
+                    style="position:absolute;top:0;left:0;width:100%;height:100%;"
+                    title="App Creators, Vibe Coders &amp; AI Enthusiasts– Founder Job Post Video"></iframe></div>
+            <script src="https://player.vimeo.com/api/player.js"></script>
+        </div>
+    </section>
+
+    <!-- Open Roles -->
+    <section class="roles-section container">
+        <h2 class="section-title text-center" style="margin-bottom: 60px;">Find Your <span
+                class="text-gradient">Fit</span></h2>
+
+        <div class="roles-list">
+
+            <!-- Role 1 -->
+            <div class="role-card">
+                <div class="role-header" onclick="toggleRole(this)">
+                    <div class="role-title-box">
+                        <span class="role-number">1</span>
+                        <h3 class="role-title">Web-Based Development Tools</h3>
+                    </div>
+                    <i data-lucide="chevron-down" class="role-toggle-icon"></i>
+                </div>
+                <div class="role-content">
+                    <p><strong>Title:</strong> AI Creators using Cursor, Lovable, Replit, Windsurf – LATAM Preferred</p>
+                    <p><strong>Description:</strong> We're building a team of early adopters who love and have been
+                        experimenting with the following Web-Based Development AI tools. If you play with AI tools just
+                        for fun or you're constantly tinkering with new platforms, and want to create test projects
+                        using the tools below, we want to connect with you.</p>
+
+                    <h4>Looking For Creators Using:</h4>
+                    <p>Cursor, Lovable, Base44, Replit, Windsurf, v0.dev</p>
+
+                    <h4>Ideal Vibe:</h4>
+                    <ul>
+                        <li>You're the one people call when they don't understand the latest AI tool</li>
+                        <li>You've built something cool (even if small) using AI or automation</li>
+                        <li>You're proactive, a little scrappy, and love sharing what works</li>
+                    </ul>
+
+                    <p><strong>👉 Apply with:</strong><br>
+                        1) The development tool(s) you've used.<br>
+                        2) A short description of a project you've built or tested with it.<br>
+                        3) Your preferred working style (solo, collab, experimental).</p>
+
+                    <button class="btn btn-primary apply-btn"
+                        onclick="openApplyModal('Web-Based Development Tools')">Apply Now <i data-lucide="arrow-right"
+                            size="16"></i></button>
+                </div>
+            </div>
+
+            <!-- Role 2 -->
+            <div class="role-card">
+                <div class="role-header" onclick="toggleRole(this)">
+                    <div class="role-title-box">
+                        <span class="role-number">2</span>
+                        <h3 class="role-title">AI-Powered Coding Assistants</h3>
+                    </div>
+                    <i data-lucide="chevron-down" class="role-toggle-icon"></i>
+                </div>
+                <div class="role-content">
+                    <p><strong>Title:</strong> AI Creators using GitHub Copilot, Cursor, Windsurf – LATAM Preferred</p>
+                    <p><strong>Description:</strong> We're looking for creators experimenting with AI-powered coding
+                        assistants to join test projects. If you've been using AI to write, debug, or accelerate code,
+                        this is for you.</p>
+
+                    <h4>Looking For Creators Using:</h4>
+                    <p>GitHub Copilot, Cursor, Windsurf, Lovable, Replit, v0.dev</p>
+
+                    <h4>Ideal Vibe:</h4>
+                    <ul>
+                        <li>You're the one people call when they don't understand the latest AI tool</li>
+                        <li>You've built something cool (even if small) using AI or automation</li>
+                        <li>You're proactive, a little scrappy, and love sharing what works</li>
+                    </ul>
+
+                    <button class="btn btn-primary apply-btn"
+                        onclick="openApplyModal('AI-Powered Coding Assistants')">Apply Now <i data-lucide="arrow-right"
+                            size="16"></i></button>
+                </div>
+            </div>
+
+            <!-- Role 3 -->
+            <div class="role-card">
+                <div class="role-header" onclick="toggleRole(this)">
+                    <div class="role-title-box">
+                        <span class="role-number">3</span>
+                        <h3 class="role-title">Image Generation & Design Tools</h3>
+                    </div>
+                    <i data-lucide="chevron-down" class="role-toggle-icon"></i>
+                </div>
+                <div class="role-content">
+                    <p><strong>Title:</strong> AI Creators using MidJourney, DALL·E 3, Canva Magic Studio – LATAM
+                        Preferred</p>
+                    <p><strong>Description:</strong> We're looking for AI enthusiasts experimenting with image
+                        generation and design tools. If you've created visuals, concept art, or design projects with
+                        these platforms, we want to collaborate.</p>
+
+                    <h4>Looking For Creators Using:</h4>
+                    <p>MidJourney, DALL·E 3, Canva Magic Studio</p>
+
+                    <h4>Ideal Vibe:</h4>
+                    <ul>
+                        <li>You're the one people call when they don't understand the latest AI tool</li>
+                        <li>You've built something cool (even if small) using AI or automation</li>
+                        <li>You're proactive, a little scrappy, and love sharing what works</li>
+                    </ul>
+
+                    <button class="btn btn-primary apply-btn"
+                        onclick="openApplyModal('Image Generation & Design Tools')">Apply Now <i
+                            data-lucide="arrow-right" size="16"></i></button>
+                </div>
+            </div>
+
+            <!-- Role 4 -->
+            <div class="role-card">
+                <div class="role-header" onclick="toggleRole(this)">
+                    <div class="role-title-box">
+                        <span class="role-number">4</span>
+                        <h3 class="role-title">Video Generation Tools</h3>
+                    </div>
+                    <i data-lucide="chevron-down" class="role-toggle-icon"></i>
+                </div>
+                <div class="role-content">
+                    <p><strong>Title:</strong> AI Creators using Runway, Sora, OpusClip – LATAM Preferred</p>
+                    <p><strong>Description:</strong> We're building a team of AI early adopters who experiment with
+                        video generation and editing tools. If you've produced AI-assisted videos or enjoy testing new
+                        platforms, this is your space.</p>
+
+                    <h4>Looking For Creators Using:</h4>
+                    <p>Descript, OpusClip, Synthesia, Runway, Sora, Kling, Veo, Pika Labs, LTX Studio, Adobe Firefly,
+                        Vidu, Hailuo, Luma Dream Machine, Wisecut, Elai.io, Capsule, Filmora, Gling, Magisto.</p>
+
+                    <h4>Ideal Vibe:</h4>
+                    <ul>
+                        <li>You're the one people call when they don't understand the latest AI tool</li>
+                        <li>You've built something cool (even if small) using AI or automation</li>
+                        <li>You're proactive, a little scrappy, and love sharing what works</li>
+                    </ul>
+
+                    <button class="btn btn-primary apply-btn" onclick="openApplyModal('Video Generation Tools')">Apply
+                        Now <i data-lucide="arrow-right" size="16"></i></button>
+                </div>
+            </div>
+
+            <!-- Role 5 -->
+            <div class="role-card">
+                <div class="role-header" onclick="toggleRole(this)">
+                    <div class="role-title-box">
+                        <span class="role-number">5</span>
+                        <h3 class="role-title">Audio Generation Tools (Music & Voice)</h3>
+                    </div>
+                    <i data-lucide="chevron-down" class="role-toggle-icon"></i>
+                </div>
+                <div class="role-content">
+                    <p><strong>Title:</strong> AI Creators using Suno, Udio, ElevenLabs – LATAM Preferred</p>
+                    <p><strong>Description:</strong> We're looking for creators experimenting with AI-driven music and
+                        voice generation tools. If you've generated songs, soundtracks, or cloned voices, we want to see
+                        what you've made.</p>
+
+                    <h4>Looking For Creators Using:</h4>
+                    <p>Suno, Udio, Soundraw, Riffusion, Mubert, Beatoven.ai, AIVA, Loudly, Splash Pro, Soundful, Magenta
+                        Studio, WavTool, MakeBestMusic, BandLab SongStarter, Tad.ai, Ecrett Music, ElevenLabs</p>
+
+                    <h4>Ideal Vibe:</h4>
+                    <ul>
+                        <li>You're the one people call when they don't understand the latest AI tool</li>
+                        <li>You've built something cool (even if small) using AI or automation</li>
+                        <li>You're proactive, a little scrappy, and love sharing what works</li>
+                    </ul>
+
+                    <button class="btn btn-primary apply-btn" onclick="openApplyModal('Audio Generation Tools')">Apply
+                        Now <i data-lucide="arrow-right" size="16"></i></button>
+                </div>
+            </div>
+
+            <!-- Role 6 -->
+            <div class="role-card">
+                <div class="role-header" onclick="toggleRole(this)">
+                    <div class="role-title-box">
+                        <span class="role-number">6</span>
+                        <h3 class="role-title">Productivity & Automation Tools</h3>
+                    </div>
+                    <i data-lucide="chevron-down" class="role-toggle-icon"></i>
+                </div>
+                <div class="role-content">
+                    <p><strong>Title:</strong> AI Creators using Notion AI, Zapier, Make.com – LATAM Preferred</p>
+                    <p><strong>Description:</strong> We're seeking AI enthusiasts who use productivity and workflow
+                        automation tools to make life easier. If you've automated tasks, built dashboards, or created
+                        workflows, we want you on our team.</p>
+
+                    <h4>Looking For Creators Using:</h4>
+                    <p>Notion AI, Gamma, Fathom, Fireflies.ai, Zapier, Make.com, n8n</p>
+
+                    <h4>Ideal Vibe:</h4>
+                    <ul>
+                        <li>You're the one people call when they don't understand the latest AI tool</li>
+                        <li>You've built something cool (even if small) using AI or automation</li>
+                        <li>You're proactive, a little scrappy, and love sharing what works</li>
+                    </ul>
+
+                    <button class="btn btn-primary apply-btn"
+                        onclick="openApplyModal('Productivity & Automation Tools')">Apply Now <i
+                            data-lucide="arrow-right" size="16"></i></button>
+                </div>
+            </div>
+
+            <!-- Role 7 -->
+            <div class="role-card">
+                <div class="role-header" onclick="toggleRole(this)">
+                    <div class="role-title-box">
+                        <span class="role-number">7</span>
+                        <h3 class="role-title">Avatar Tools (Virtual Humans & Talking Heads)</h3>
+                    </div>
+                    <i data-lucide="chevron-down" class="role-toggle-icon"></i>
+                </div>
+                <div class="role-content">
+                    <p><strong>Title:</strong> AI Creators using HeyGen, Elai.io, Synthesia – LATAM Preferred</p>
+                    <p><strong>Description:</strong> We're searching for AI creators who experiment with avatar and
+                        talking-head video tools. If you've built content using AI avatars for storytelling, education,
+                        or marketing, this is your chance to join.</p>
+
+                    <h4>Looking For Creators Using:</h4>
+                    <p>HeyGen, Elai.io, Synthesia, D-ID, HourOne</p>
+
+                    <h4>Ideal Vibe:</h4>
+                    <ul>
+                        <li>You're the one people call when they don't understand the latest AI tool</li>
+                        <li>You've built something cool (even if small) using AI or automation</li>
+                        <li>You're proactive, a little scrappy, and love sharing what works</li>
+                    </ul>
+
+                    <button class="btn btn-primary apply-btn" onclick="openApplyModal('Avatar Tools')">Apply Now <i
+                            data-lucide="arrow-right" size="16"></i></button>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Application Modal -->
+    <div class="modal-overlay" id="apply-modal">
+        <div class="modal-content">
+            <button class="modal-close" id="modal-close" aria-label="Close modal">
+                <i data-lucide="x" size="20"></i>
+            </button>
+            <h2 class="section-title" style="font-size: 2rem; margin-bottom: 24px;">Submit <span
+                    class="text-gradient">Application</span></h2>
+
+            <form id="careers-form">
+                <div id="error-message" class="hidden" style="color: #ef4444; text-align: center; margin-bottom: 20px;">
+                </div>
+
+                <input type="hidden" id="role-input" name="role" value="">
+
+                <div class="form-group">
+                    <label class="form-label">Applying for Role</label>
+                    <input type="text" id="display-role" class="form-control" disabled style="opacity: 0.7;">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Full Name *</label>
+                    <input type="text" name="full_name" class="form-control" required placeholder="Jane Doe">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Email Address *</label>
+                    <input type="email" name="email" class="form-control" required placeholder="jane@example.com">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Location / Timezone (LATAM Preferred)</label>
+                    <input type="text" name="location_timezone" class="form-control" placeholder="e.g. Bogota (EST)">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">What tools have you used? *</label>
+                    <input type="text" name="tools_used" class="form-control" required
+                        placeholder="e.g. Cursor, Make.com, MidJourney">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Short Description of a Project *</label>
+                    <textarea name="project_description" class="form-control" rows="4" required
+                        placeholder="Tell us about what you built or tested..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Preferred Working Style *</label>
+                    <select name="working_style" class="form-control" required>
+                        <option value="" disabled selected>Select your style...</option>
+                        <option value="Solo">Solo</option>
+                        <option value="Collaborative">Collaborative</option>
+                        <option value="Experimental">Experimental</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Links to your work / profiles (Optional)</label>
+                    <input type="text" name="links" class="form-control"
+                        placeholder="Github, Portfolio, LinkedIn, X...">
+                </div>
+
+                <button type="submit" class="btn btn-primary"
+                    style="width: 100%; justify-content: center; margin-top: 10px;">
+                    <span>Submit Application</span>
+                    <div class="spinner" style="display: none;"></div>
+                </button>
+            </form>
+
+            <div id="success-message" class="hidden" style="text-align: center; margin-top: 30px;">
+                <div style="display: flex; justify-content: center; margin-bottom: 20px;">
+                    <i data-lucide="check-circle" size="48" style="color: var(--accent-cyan);"></i>
+                </div>
+                <h3>Application Received!</h3>
+                <p style="color: var(--text-muted); margin-top: 10px;">We'll be in touch soon.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-col footer-brand">
+                    <a href="/" class="logo-area" style="text-decoration: none;">
+                        <span class="site-name" style="font-size: 1.5rem;">AI Tools Explorers Night</span>
+                    </a>
+                    <p>Hosted by <strong>We've Got Now</strong> (Developing Professionals in Information Technology). A
+                        community for aspiring IT professionals built on inclusion, curiosity, and entrepreneurship.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Explore</h4>
+                    <ul>
+                        <li><a href="/">Home</a></li>
+                        <li><a href="/about.html">About Us</a></li>
+                        <li><a href="/prompt-library">Prompt Library</a></li>
+                        <li><a href="/careers.html">Careers</a></li>
+                        <li><a href="/hackathon.html">Hackathon</a></li>
+                        <li><a href="/#join">Join Community</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Connect</h4>
+                    <ul>
+                        <li><a href="https://www.linkedin.com/groups/13007016/" target="_blank">LinkedIn Group</a></li>
+                        <li><a href="https://www.meetup.com/weve_got_now/" target="_blank">Meetup Page</a></li>
+                        <li><a href="mailto:hello@aitoolsexplorers.com">Contact Us</a></li>
+                    </ul>
+                    <div class="footer-socials" style="margin-top: 20px;">
+                        <a href="#" aria-label="Twitter"><i data-lucide="twitter" size="20"></i></a>
+                        <a href="#" aria-label="LinkedIn"><i data-lucide="linkedin" size="20"></i></a>
+                        <a href="#" aria-label="Instagram"><i data-lucide="instagram" size="20"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Developing Professionals in Information Technology. All rights reserved.</p>
+                <div style="display: flex; gap: 24px;">
+                    <a href="#">Privacy Policy</a>
+                    <a href="#">Terms of Service</a>
+                    <a href="#">Code of Conduct</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/sheets.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        lucide.createIcons();
+
+        // Accordion functionality
+        function toggleRole(element) {
+            const card = element.parentElement;
+
+            // Close all others
+            document.querySelectorAll('.role-card').forEach(c => {
+                if (c !== card) c.classList.remove('active');
+            });
+
+            // Toggle current
+            card.classList.toggle('active');
+        }
+
+        // Modal Functionality
+        const modal = document.getElementById('apply-modal');
+        const modalCloseBtn = document.getElementById('modal-close');
+
+        function openApplyModal(roleName) {
+            document.getElementById('role-input').value = roleName;
+            document.getElementById('display-role').value = roleName;
+
+            // Reset form
+            document.getElementById('careers-form').style.display = 'block';
+            document.getElementById('success-message').classList.add('hidden');
+            document.getElementById('careers-form').reset();
+
+            document.getElementById('display-role').value = roleName; // set again after reset
+            document.getElementById('role-input').value = roleName;
+
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            modal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        modalCloseBtn.addEventListener('click', closeModal);
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+    </script>
+</body>
+
+</html>

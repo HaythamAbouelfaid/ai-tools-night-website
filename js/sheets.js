@@ -29,6 +29,12 @@ document.addEventListener('DOMContentLoaded', () => {
         setupForm(hackathonForm, 'hackathon');
     }
 
+    // Check for Careers Form (careers.html)
+    const careersForm = document.getElementById('careers-form');
+    if (careersForm) {
+        setupForm(careersForm, 'careers');
+    }
+
     // Setup Copy Button
     const copyBtns = document.querySelectorAll('#copy-btn');
     copyBtns.forEach(btn => {
