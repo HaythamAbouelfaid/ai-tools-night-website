@@ -312,23 +312,23 @@
 
     const appendMessage = (text, role) => {
         const msg = document.createElement('div');
-        msg.className = \`chat-msg \${role}\`;
-        
+        msg.className = `chat-msg ${role}`;
+
         let displayHtml = text;
         if (role === 'bot') {
             displayHtml = displayHtml
-                .replace(/\\n/g, '<br/>')
-                .replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>')
-                .replace(/\\*(.*?)\\*/g, '<em>$1</em>')
-                .replace(/\\[(.*?)\\]\\((.*?)\\)/g, '<a href="$2" target="_blank">$1</a>');
+                .replace(/\n/g, '<br/>')
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                .replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank">$1</a>');
         }
-        
+
         msg.innerHTML = displayHtml;
         chatBody.appendChild(msg);
         scrollToBottom();
-        
+
         // Setup copy overlay for bot messages
-        if(role === 'bot') {
+        if (role === 'bot') {
             msg.style.position = 'relative';
             msg.addEventListener('dblclick', () => {
                 navigator.clipboard.writeText(text);
@@ -360,7 +360,7 @@
         chatInput.value = '';
         appendMessage(text, 'user');
         messagesHistory.push({ role: "user", content: text });
-        
+
         isWaitingForResponse = true;
         sendBtn.disabled = true;
 
@@ -377,7 +377,7 @@
 
                 if (!response.ok) {
                     let errMsg = "API Error";
-                    try { const errObj = await response.json(); errMsg = errObj.error || errMsg; } catch(e){}
+                    try { const errObj = await response.json(); errMsg = errObj.error || errMsg; } catch (e) { }
                     appendMessage('⚠️ ' + errMsg, 'bot');
                     isWaitingForResponse = false;
                     sendBtn.disabled = false;
@@ -398,11 +398,11 @@
                 removeTyping();
                 appendMessage("Network error. Could not connect to API.", 'bot');
             }
-            
+
             isWaitingForResponse = false;
             sendBtn.disabled = false;
             setTimeout(() => chatInput.focus(), 100);
-            
+
         }, 300); // 300ms realistic processing delay
     };
 
