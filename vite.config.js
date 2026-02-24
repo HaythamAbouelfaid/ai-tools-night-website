@@ -16,6 +16,7 @@ export default defineConfig({
                 about: 'about.html',
                 events: 'events.html',
                 hackathon: 'hackathon.html',
+                promptLibrary: 'prompt-library.html',
                 success: 'success.html'
             }
         }
