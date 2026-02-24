@@ -20,6 +20,10 @@ envRaw.split('\n').forEach(line => {
 const EMAIL = env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
 const PRIVATE_KEY = env.GOOGLE_PRIVATE_KEY;
 const SHEET_ID = env.GOOGLE_SHEET_ID;
+const OPENROUTER_API_KEY = env.OPENROUTER_API_KEY || '';
+
+// Rate Limits
+const chatRateLimits = new Map();
 
 // 2. JWT helpers for ZERO-DEPENDENCY Google OAuth 
 function base64UrlEncode(str) {
@@ -82,7 +86,91 @@ const server = http.createServer(async (req, res) => {
         return res.end();
     }
 
-    if (req.method === 'POST' && req.url === '/api/submit') {
+    if (req.method === 'POST' && req.url === '/api/chat') {
+        let bodyChunks = [];
+        req.on('data', chunk => bodyChunks.push(chunk));
+
+        req.on('end', async () => {
+            try {
+                const ip = req.socket.remoteAddress || "unknown";
+                const now = Date.now();
+                const userLimit = chatRateLimits.get(ip) || { count: 0, resetTime: now + 60000 };
+
+                if (now > userLimit.resetTime) {
+                    userLimit.count = 0;
+                    userLimit.resetTime = now + 60000;
+                }
+
+                if (userLimit.count >= 15) {
+                    res.writeHead(429, { 'Content-Type': 'application/json' });
+                    return res.end(JSON.stringify({ error: "Rate limit exceeded. Try again later." }));
+                }
+
+                userLimit.count++;
+                chatRateLimits.set(ip, userLimit);
+
+                if (!OPENROUTER_API_KEY) {
+                    res.writeHead(500, { 'Content-Type': 'application/json' });
+                    return res.end(JSON.stringify({ error: "OpenRouter API Key not configured." }));
+                }
+
+                const data = JSON.parse(Buffer.concat(bodyChunks).toString());
+                const messages = data.messages || [];
+
+                // Filter down to last 6 messages (truncate older ones)
+                const recentHistory = messages.slice(-6);
+
+                const systemPrompt = `You are the AI Tools Explorers Night assistant.
+You help users navigate the site, understand prompts, learn about AI tools, and apply for roles.
+Be concise, clear, and builder-focused. Avoid formatting with markdown bullet points if possible to keep responses clean in chat, unless necessary.
+If a user asks something unrelated to AI or the site, respond briefly and redirect to helpful content.
+Encourage exploration and experimentation.
+
+Context:
+Routes: Home (/), Events (/events.html), Prompt Library (/prompt-library), Careers (/careers.html), Hackathon (/hackathon.html), About (/about.html)
+Prompts: "Meta LinkedIn Outreach", "Efficiency LinkedIn Outreach", "Outcome-Focused LinkedIn Outreach", "Challenger LinkedIn Outreach".
+Careers Roles: "Web-Based Development Tools", "AI-Powered Coding Assistants", "Image Generation & Design Tools", "Video Generation Tools", "Audio Generation Tools", "Productivity & Automation Tools", "Avatar Tools".`;
+
+                const apiMessages = [
+                    { role: "system", content: systemPrompt },
+                    ...recentHistory
+                ];
+
+                const chatReq = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+                    method: 'POST',
+                    headers: {
+                        "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
+                        "Content-Type": "application/json",
+                        "HTTP-Referer": "http://localhost:3000",
+                        "X-Title": "AI Tools Explores Night Assistant"
+                    },
+                    body: JSON.stringify({
+                        model: "anthropic/claude-3-haiku",
+                        messages: apiMessages,
+                        max_tokens: 400
+                    })
+                });
+
+                if (!chatReq.ok) {
+                    const errText = await chatReq.text();
+                    throw new Error(errText);
+                }
+
+                const json = await chatReq.json();
+                const textResponse = (json.choices && json.choices.length > 0)
+                    ? json.choices[0].message.content
+                    : "I didn't quite catch that. Please try again.";
+
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ response: textResponse }));
+            } catch (err) {
+                console.error("Chat API error:", err);
+                res.writeHead(500, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify({ error: "Sorry, I am having trouble connecting to my brain right now." }));
+            }
+        });
+        return;
+    } else if (req.method === 'POST' && req.url === '/api/submit') {
         let bodyChunks = [];
         req.on('data', chunk => bodyChunks.push(chunk));
 

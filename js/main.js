@@ -437,3 +437,12 @@ document.addEventListener('DOMContentLoaded', () => {
     renderPastEvents();
 
 });
+
+// --------------------------------------------------------
+// Initialize AI Chat Assistant Widget
+// --------------------------------------------------------
+document.addEventListener('DOMContentLoaded', () => {
+    const chatScript = document.createElement('script');
+    chatScript.src = '/js/chat.js';
+    document.body.appendChild(chatScript);
+});
