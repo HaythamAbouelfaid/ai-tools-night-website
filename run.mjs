@@ -2,7 +2,7 @@ import { spawn } from 'child_process';
 
 // A tiny zero-dependency replacement for "concurrently" to avoid npm network blocks
 console.log("Starting backend server...");
-const backend = spawn('node', ['server.js'], { stdio: 'inherit', shell: true });
+const backend = spawn('node', ['--watch', 'server.js'], { stdio: 'inherit', shell: true });
 
 console.log("Starting frontend server (Vite)...");
 const frontend = spawn('npx', ['vite'], { stdio: 'inherit', shell: true });
