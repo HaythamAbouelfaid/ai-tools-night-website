@@ -1,0 +1,14 @@
+  % Total    % Received % Xferd  Average Speed   Time    Time     Time  Current
+                                 Dload  Upload   Total   Spent    Left  Speed
+  0     0    0     0    0     0      0      0 --:--:-- --:--:-- --:--:--     0100   135    0     0  100   135      0    653 --:--:-- --:--:-- --:--:--   652100   196    0    61  100   135    120    267 --:--:-- --:--:-- --:--:--   387
+HTTP/1.1 200 OK
+Access-Control-Allow-Origin: *
+Access-Control-Allow-Methods: OPTIONS, POST
+Access-Control-Allow-Headers: Content-Type
+Content-Type: application/json
+Date: Wed, 25 Feb 2026 22:16:57 GMT
+Connection: keep-alive
+Keep-Alive: timeout=5
+Transfer-Encoding: chunked
+
+{"success":true,"message":"Added to Google Sheets properly."}
