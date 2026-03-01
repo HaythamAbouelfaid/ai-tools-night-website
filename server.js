@@ -127,7 +127,7 @@ If a user asks something unrelated to AI or the site, respond briefly and redire
 Encourage exploration and experimentation.
 
 Context:
-Routes: Home (/), Events (/events.html), Prompt Library (/prompt-library), Careers (/careers.html), Hackathon (/hackathon.html), About (/about.html)
+Routes: Home (/), Events (/events.html), Prompt Library (/prompt-library), Careers (/careers.html), Project Submissions (/hackathon.html), About (/about.html)
 Prompts: "Meta LinkedIn Outreach", "Efficiency LinkedIn Outreach", "Outcome-Focused LinkedIn Outreach", "Challenger LinkedIn Outreach".
 Careers Roles: "Web-Based Development Tools", "AI-Powered Coding Assistants", "Image Generation & Design Tools", "Video Generation Tools", "Audio Generation Tools", "Productivity & Automation Tools", "Avatar Tools".`;
 
