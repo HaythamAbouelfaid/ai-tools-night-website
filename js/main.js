@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Event Configuration (Easy Update Spot)
     // --------------------------------------------------------
     const EVENT_CONFIG = {
-        date: "March 25",
+        date: "April 22",
         year: "2026"
     };
 
@@ -130,13 +130,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const upcomingEvent = {
         title: "AI Tool Explorers Night | Connect & Make New Friends",
-        date: new Date("2026-03-25T18:00:00"),
-        endDate: new Date("2026-03-25T20:00:00"),
+        date: new Date("2026-04-22T18:00:00"),
+        endDate: new Date("2026-04-22T20:00:00"),
         locationName: "Aslin Beer Company - Herndon",
         address: "767 Elden St · Herndon, VA",
         hosts: ["Gus", "Haytham"],
-        desc: "Join us for a clear, structured night of AI demos and networking. We respect your time with a tight schedule and actionable takeaways.",
-        meetupUrl: "https://www.meetup.com/weve_got_now/", // Placeholder
+        desc: "Join us for another AI Tools Explorers Night — a builder-focused meetup for students, founders, and curious operators exploring practical AI tools, workflows, automation, and real-world execution.",
+        meetupUrl: "https://meetu.ps/e/PVW3M/1dT7c7/i",
         flow: [
             { time: "6:00 PM", title: "Arrivals & Intros" },
             { time: "6:15 PM", title: "AI Demo / Learning Nugget" },
@@ -146,6 +146,17 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const pastEvents = [
+        {
+            title: "AI Tool Explorers Night | Connect & Make New Friends",
+            date: new Date("2026-04-01T18:00:00"),
+            location: "Aslin Beer Company - Herndon",
+            city: "Herndon",
+            hosts: ["Gus", "Haytham"],
+            attendees: 19,
+            photos: 0,
+            tags: ["AI Tools", "Founders", "Automation"],
+            desc: "An evening of practical AI conversations, founder insights, automation demos, and real discussions around startup systems, outreach, CRM workflows, and builder-focused execution."
+        },
         {
             title: "AI Tool Explorers Night | Connect & Make New Friends",
             date: new Date("2025-08-20T18:00:00"),
